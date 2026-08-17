@@ -657,7 +657,7 @@ function openDetail(name){
 const all=ALL_COURSES["通年"];
 const c=all.find(x=>x.name===name); if(!c) return;
 const d=c.detail;
-const deliveryNoteHtml = '<div class="modal-delivery-note">\u203b映像講座は、電子契約締結後 <strong>1週間以内</strong> に順次配布いたします。</div>';
+const deliveryNoteHtml = '<div class="modal-delivery-note">\u203b講座は、電子契約締結後 <strong>1週間以内</strong> に順次配布いたします。</div>';
 document.getElementById("detailTitle").textContent=c.name;
 document.getElementById("detailBody").innerHTML=
 "<div class=\"modal-badge\">講座詳細</div>"+
