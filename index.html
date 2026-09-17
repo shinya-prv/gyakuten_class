@@ -68,8 +68,9 @@ input[type=text]:focus,input[type=email]:focus{outline:none;border-color:var(--m
 .pack-early{margin-top:8px;padding:7px 10px;background:#fff8ee;border-left:3px solid var(--cta);border-radius:0 5px 5px 0;font-size:12px;color:#8a5a1a;line-height:1.6}
 .pack-early strong{color:var(--cta2);font-size:15px;font-weight:700}
 .pack-tag{display:inline-block;background:#e6f4f9;color:var(--dark);border:1px solid var(--light);border-radius:4px;font-size:10.5px;padding:2px 7px;margin-top:8px}
-.pack-detail-btn{font-size:11.5px;color:var(--main);background:none;border:1px solid var(--main);border-radius:12px;padding:3px 12px;cursor:pointer;margin-top:10px;font-family:"Noto Sans JP",sans-serif}
+.pack-detail-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-size:13.5px;font-weight:700;color:var(--main);background:#eaf6fb;border:1.5px solid var(--main);border-radius:8px;padding:11px 14px;cursor:pointer;margin-top:12px;font-family:"Noto Sans JP",sans-serif;transition:all .2s}
 .pack-detail-btn:hover{background:var(--main);color:#fff}
+.pack-detail-btn::after{content:"\203a";font-size:17px;line-height:1;font-weight:700}
 .single-link{display:block;text-align:center;font-size:13px;color:var(--main);text-decoration:underline;padding:14px 0 4px;cursor:pointer;background:none;border:none;width:100%;font-family:"Noto Sans JP",sans-serif}
 
 /* ===== 選択肢（オプション・英語校・アドオン・単品） ===== */
@@ -85,7 +86,7 @@ input[type=text]:focus,input[type=email]:focus{outline:none;border-color:var(--m
 .ci-note{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.5}
 .ci-price{font-size:13px;font-weight:700;color:var(--main);white-space:nowrap;margin-left:6px}
 .ci-price s{color:var(--muted);font-weight:400;font-size:11.5px;margin-right:4px}
-.ci-dbtn{font-size:11px;color:var(--main);background:none;border:1px solid var(--main);border-radius:12px;padding:2px 9px;cursor:pointer;white-space:nowrap;flex-shrink:0;margin-left:4px;font-family:"Noto Sans JP",sans-serif}
+.ci-dbtn{font-size:12.5px;font-weight:700;color:var(--main);background:#eaf6fb;border:1.5px solid var(--main);border-radius:7px;padding:7px 14px;cursor:pointer;white-space:nowrap;flex-shrink:0;margin-left:4px;font-family:"Noto Sans JP",sans-serif;transition:all .2s}
 .ci-dbtn:hover{background:var(--main);color:#fff}
 .fixed-note{background:#eaf6fb;border:1px solid var(--light);border-left:4px solid var(--main);border-radius:0 8px 8px 0;padding:12px 15px;font-size:12.5px;color:var(--dark);line-height:1.8;margin-bottom:16px}
 .fixed-note strong{font-weight:700}
@@ -730,7 +731,7 @@ function renderPacks(){
     h += '</div>';
     if(p.realtime) h += '<div class="pack-tag">小論文リアルタイム参加は '+KEIO_REALTIME_DEADLINE+' まで</div>';
     if(p.tier==="松"||p.tier==="竹") h += '<div class="pack-tag">3回分割のお支払いに対応</div>';
-    h += '<br><button type="button" class="pack-detail-btn" onclick="openPackDetail(\''+p.id+'\')">内容を詳しく見る</button>';
+    h += '<button type="button" class="pack-detail-btn" onclick="openPackDetail(\''+p.id+'\')">含まれる講座の内容を見る</button>';
     div.innerHTML=h;
     wrap.appendChild(div);
   });
@@ -966,7 +967,7 @@ function renderSingle(){
       +'<span class="ci-body"><span class="ci-name">'+esc(c.name)+'</span>'
       +'<span class="ci-note">'+esc(c.detail.time)+'</span></span>'
       +'<span class="ci-price">'+yen(c.price)+'</span></label>'
-      +'<div style="padding:0 14px 11px 43px"><button type="button" class="ci-dbtn" onclick="openDetail(\''+id+'\')">詳細を確認</button></div>';
+      +'<div style="padding:0 14px 12px 43px"><button type="button" class="ci-dbtn" onclick="openDetail(\''+id+'\')">講座の内容を見る</button></div>';
     div.querySelector("input").addEventListener("change",()=>{
       const i=S.singles.indexOf(id);
       if(i>=0) S.singles.splice(i,1); else S.singles.push(id);
@@ -1158,8 +1159,10 @@ function buildConfirm(){
     ["氏名", esc(S.name)],
     ["メール", esc(S.email)],
   ];
-  if(S.mode!=="tsunen") rows.push(["志望校",'<span class="tbadge">'+esc(S.segLabel)+'</span>']);
-  rows.push(["お申し込み",'<span class="tbadge">'+esc(packNameLabel())+'</span>']);
+  if(S.mode!=="tsunen") rows.push(["志望校",'<span class="tbadge">'+esc(S.segLabel)+'</span>'
+    +(S.mode==="single"?'<div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.6">\u203b ご案内の区分として記録するものであり、受講講座の内容とは関係ありません。</div>':'')]);
+  const appLabel = (S.mode==="single") ? "単品購入" : packNameLabel();
+  rows.push(["お申し込み",'<span class="tbadge">'+esc(appLabel)+'</span>']);
   rows.push(["受講講座", t.items.map(i=>'<span class="ctag'+(i.kind==="アドオン"?" add":"")+'">'+esc(i.name)+(i.kind==="アドオン"?"（追加）":"")+'</span>').join("")]);
   document.getElementById("confirmTbl").innerHTML=rows.map(r=>"<tr><th>"+r[0]+"</th><td>"+r[1]+"</td></tr>").join("");
 
